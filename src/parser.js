@@ -1,5 +1,4 @@
 const fs = require('fs');
-const luxon = require('luxon');
 const xml2js = require('xml2js');
 
 const shared = require('./shared');
@@ -80,7 +79,8 @@ function getPostTitle(post) {
 }
 
 function getPostDate(post) {
-	return luxon.DateTime.fromRFC2822(post.pubDate[0], { zone: 'utc' }).toISODate();
+	// Return full timestamp to capture publication time too.
+	return new Date(post.pubDate[0]).toISOString();
 }
 
 function collectAttachedImages(data) {
@@ -135,7 +135,7 @@ function mergeImagesIntoPosts(images, posts) {
 				// save cover image filename to frontmatter
 				post.frontmatter.coverImage = shared.getFilenameFromUrl(image.url);
 			}
-			
+
 			// save (unique) full image URLs for downloading later
 			if (!post.meta.imageUrls.includes(image.url)) {
 				post.meta.imageUrls.push(image.url);
